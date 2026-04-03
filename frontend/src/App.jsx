@@ -1,120 +1,141 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useState, useEffect } from 'react'
+import ProductForm from './ProductForm'
+import ProductList from './ProductList'
 import './App.css'
 
+const API_URL = 'http://localhost:3000/elements'
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [editingProduct, setEditingProduct] = useState(null)
+  const [search, setSearch] = useState('')
+
+  // Cargar todos los productos
+  const fetchProducts = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(API_URL)
+      if (!res.ok) throw new Error('Error al cargar productos')
+      const data = await res.json()
+      setProducts(data)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  // Crear producto
+  const handleCreate = async (formData) => {
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      if (!res.ok) throw new Error('Error al crear producto')
+      await fetchProducts()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  // Actualizar producto
+  const handleUpdate = async (formData) => {
+    try {
+      const res = await fetch(`${API_URL}/${editingProduct.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      if (!res.ok) throw new Error('Error al actualizar producto')
+      setEditingProduct(null)
+      await fetchProducts()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  // Eliminar producto
+  const handleDelete = async (id) => {
+    if (!confirm('¿Seguro que querés eliminar este producto?')) return
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Error al eliminar producto')
+      await fetchProducts()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const handleSubmit = (formData) => {
+    if (editingProduct) {
+      handleUpdate(formData)
+    } else {
+      handleCreate(formData)
+    }
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-container">
+      <header className="app-header">
+        <h1>Gestión de Inventario</h1>
+        <p>Administrá tus productos fácilmente</p>
+      </header>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      <main className="app-main">
+        <div className="stats-row">
+          <div className="stat-card">
+            <span className="stat-label">Total productos</span>
+            <span className="stat-value">{products.length}</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Sin stock</span>
+            <span className="stat-value danger">
+              {products.filter(p => p.quantity === 0).length}
+            </span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-label">Unidades totales</span>
+            <span className="stat-value">
+              {products.reduce((acc, p) => acc + p.quantity, 0)}
+            </span>
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+        <ProductForm
+          onSubmit={handleSubmit}
+          editingProduct={editingProduct}
+          onCancelEdit={() => setEditingProduct(null)}
+        />
+
+        {error && (
+          <div className="error-banner">
+            {error}
+            <button onClick={() => setError(null)}>✕</button>
+          </div>
+        )}
+
+        {loading ? (
+          <div className="loading">Cargando productos...</div>
+        ) : (
+          <ProductList
+            products={products}
+            onEdit={setEditingProduct}
+            onDelete={handleDelete}
+            search={search}
+            onSearchChange={setSearch}
+          />
+        )}
+      </main>
+    </div>
   )
 }
 
