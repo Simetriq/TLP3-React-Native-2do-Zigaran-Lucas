@@ -1,46 +1,26 @@
-import { useState, useEffect } from 'react'
+import { useProductForm } from '../hooks/useProductForm'
 
+/**
+ * ProductForm
+ * Responsabilidad única: renderizar el formulario.
+ * El estado y la lógica del form viven en useProductForm.
+ */
 function ProductForm({ onSubmit, editingProduct, onCancelEdit }) {
-  const [form, setForm] = useState({
-    name: '',
-    description: '',
-    type: '',
-    quantity: ''
-  })
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    if (editingProduct) {
-      setForm({
-        name: editingProduct.name,
-        description: editingProduct.description || '',
-        type: editingProduct.type,
-        quantity: editingProduct.quantity
-      })
-    } else {
-      setForm({ name: '', description: '', type: '', quantity: '' })
-    }
-  }, [editingProduct])
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
+  const { form, validationError, handleChange, validate, reset, getSubmitData } =
+    useProductForm(editingProduct)
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!form.name || !form.type || form.quantity === '') {
-      setError('Los campos Nombre, Tipo y Cantidad son obligatorios.')
-      return
-    }
-    setError('')
-    onSubmit({ ...form, quantity: Number(form.quantity) })
-    setForm({ name: '', description: '', type: '', quantity: '' })
+    if (!validate()) return
+    onSubmit(getSubmitData())
+    reset()
   }
 
   return (
     <div className="form-card">
       <h2>{editingProduct ? 'Editar producto' : 'Agregar producto'}</h2>
-      {error && <p className="error-msg">{error}</p>}
+      {validationError && <p className="error-msg">{validationError}</p>}
+
       <form onSubmit={handleSubmit} className="product-form">
         <div className="form-row">
           <div className="form-group">
@@ -64,6 +44,7 @@ function ProductForm({ onSubmit, editingProduct, onCancelEdit }) {
             />
           </div>
         </div>
+
         <div className="form-row">
           <div className="form-group">
             <label>Descripción</label>
@@ -87,6 +68,7 @@ function ProductForm({ onSubmit, editingProduct, onCancelEdit }) {
             />
           </div>
         </div>
+
         <div className="form-actions">
           {editingProduct && (
             <button type="button" className="btn-cancel" onClick={onCancelEdit}>

@@ -1,3 +1,8 @@
+/**
+ * ProductItem
+ * Componente presentacional puro: recibe datos y callbacks, no tiene estado propio.
+ * Principio de responsabilidad única: solo muestra un producto.
+ */
 function ProductItem({ product, onEdit, onDelete }) {
   return (
     <div className="product-item">

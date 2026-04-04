@@ -1,17 +1,17 @@
 import ProductItem from './ProductItem'
 
+/**
+ * ProductList
+ * Recibe la lista ya filtrada desde App (vía useProductSearch).
+ * Solo se encarga de renderizar los ítems y el buscador.
+ */
 function ProductList({ products, onEdit, onDelete, search, onSearchChange }) {
-  const filtered = products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.type.toLowerCase().includes(search.toLowerCase()) ||
-      (p.description && p.description.toLowerCase().includes(search.toLowerCase()))
-  )
-
   return (
     <div className="list-card">
       <div className="list-header">
-        <h2>Inventario <span className="count-badge">{filtered.length}</span></h2>
+        <h2>
+          Inventario <span className="count-badge">{products.length}</span>
+        </h2>
         <input
           type="text"
           className="search-input"
@@ -21,13 +21,15 @@ function ProductList({ products, onEdit, onDelete, search, onSearchChange }) {
         />
       </div>
 
-      {filtered.length === 0 ? (
+      {products.length === 0 ? (
         <p className="empty-msg">
-          {search ? 'No se encontraron productos.' : 'No hay productos aún. ¡Agregá el primero!'}
+          {search
+            ? 'No se encontraron productos.'
+            : 'No hay productos aún. ¡Agregá el primero!'}
         </p>
       ) : (
         <div className="product-list">
-          {filtered.map((product) => (
+          {products.map((product) => (
             <ProductItem
               key={product.id}
               product={product}
