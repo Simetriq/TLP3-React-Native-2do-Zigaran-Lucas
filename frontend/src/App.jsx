@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { useProducts } from './hooks/useProducts'
-import { useProductSearch } from './hooks/useProductSearch'
-import ProductForm from './components/ProductForm'
-import ProductList from './components/ProductList'
-import StatsRow from './components/StatsRow'
+import { useProducts } from './useProducts'
+import { useProductSearch } from './useProductSearch'
+import ProductForm from './ProductForm'
+import ProductList from './ProductList'
+import StatsRow from './StatsRow'
 import './App.css'
 
 function App() {

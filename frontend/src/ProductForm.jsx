@@ -1,4 +1,4 @@
-import { useProductForm } from '../hooks/useProductForm'
+import { useProductForm } from './useProductForm'
 
 /**
  * ProductForm
