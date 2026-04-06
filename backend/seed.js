@@ -67,26 +67,26 @@ const productos = [
 const seed = async () => {
   try {
     await sequelize.authenticate();
-    console.log("✅ Conexión a la DB establecida");
+    console.log("Conexión a la DB establecida");
 
     await sequelize.sync({ alter: true });
-    console.log("✅ Tablas sincronizadas");
+    console.log("Tablas sincronizadas");
 
     // Evitar duplicados: solo inserta si la tabla está vacía
     const count = await ElementModel.count();
     if (count > 0) {
-      console.log(`⚠️  La tabla ya tiene ${count} productos. No se insertaron duplicados.`);
+      console.log(`  La tabla ya tiene ${count} productos. No se insertaron duplicados.`);
       console.log("   Si querés reinsertar, eliminá los registros primero.");
       process.exit(0);
     }
 
     await ElementModel.bulkCreate(productos);
-    console.log(`✅ ${productos.length} productos insertados correctamente:`);
+    console.log(` ${productos.length} productos insertados correctamente:`);
     productos.forEach((p) => console.log(`   - ${p.name} (${p.type})`));
 
     process.exit(0);
   } catch (error) {
-    console.error("❌ Error al ejecutar el seed:", error.message);
+    console.error("Error al ejecutar el seed:", error.message);
     process.exit(1);
   }
 };

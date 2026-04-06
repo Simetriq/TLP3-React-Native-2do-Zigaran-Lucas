@@ -3,7 +3,6 @@ import { useProductForm } from '../hooks/useProductForm'
 /**
  * ProductForm
  * Responsabilidad única: renderizar el formulario.
- * El estado y la lógica del form viven en useProductForm.
  */
 function ProductForm({ onSubmit, editingProduct, onCancelEdit }) {
   const { form, validationError, handleChange, validate, reset, getSubmitData } =

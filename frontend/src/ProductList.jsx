@@ -3,7 +3,6 @@ import ProductItem from './ProductItem'
 /**
  * ProductList
  * Recibe la lista ya filtrada desde App (vía useProductSearch).
- * Solo se encarga de renderizar los ítems y el buscador.
  */
 function ProductList({ products, onEdit, onDelete, search, onSearchChange }) {
   return (

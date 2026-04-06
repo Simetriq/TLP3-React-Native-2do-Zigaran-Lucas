@@ -3,7 +3,6 @@ const API_URL = 'http://localhost:3000/elements'
 /**
  * productService
  * Centraliza todas las llamadas a la API.
- * Si el endpoint cambia, solo se modifica acá.
  */
 export const productService = {
   async getAll() {

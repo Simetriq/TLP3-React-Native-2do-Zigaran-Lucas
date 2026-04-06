@@ -1,7 +1,6 @@
 /**
  * StatsRow
  * Muestra las estadísticas de resumen del inventario.
- * Extraído de App para que App no mezcle lógica de presentación con orquestación.
  */
 function StatsRow({ products }) {
   const total = products.length
