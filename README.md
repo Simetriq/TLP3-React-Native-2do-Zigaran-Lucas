@@ -1,8 +1,4 @@
-# Gestión de Inventario — React App
 
-Aplicación CRUD de productos que consume una API REST local, construida con React.
-
----
 
 ## Estructura del proyecto
 

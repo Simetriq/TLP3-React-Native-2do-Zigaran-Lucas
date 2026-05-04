@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useProducts } from './useProducts'
+import { useProductContext } from './ProductContext'
 import { useProductSearch } from './useProductSearch'
 import ProductForm from './ProductForm'
 import ProductList from './ProductList'
@@ -7,6 +7,7 @@ import StatsRow from './StatsRow'
 import './App.css'
 
 function App() {
+  // Ahora usamos el contexto en lugar de useProducts
   const {
     products,
     loading,
@@ -15,7 +16,7 @@ function App() {
     createProduct,
     updateProduct,
     deleteProduct,
-  } = useProducts()
+  } = useProductContext()
 
   const { search, setSearch, filtered } = useProductSearch(products)
   const [editingProduct, setEditingProduct] = useState(null)
